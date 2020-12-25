@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,10 +46,36 @@ public class Controller {
 		try {
 
 			// iscitavamo entitet iz registracione forme
-			User user = new User(registrationForm.getIme(), registrationForm.getPrezime(), registrationForm.getEmail(), registrationForm.getPassportNumber(),
-					encoder.encode(registrationForm.getPassword()));
+			User user = new User(registrationForm.getIme(), registrationForm.getPrezime(), registrationForm.getEmail(),
+					registrationForm.getPassportNumber(), encoder.encode(registrationForm.getPassword()));
 
 			// cuvamo u nasoj bazi ovaj entitet
+			userRepo.saveAndFlush(user);
+
+			return new ResponseEntity<>("success", HttpStatus.ACCEPTED);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+	}
+
+	@PatchMapping("/update")
+	public ResponseEntity<String> update(@RequestBody RegistrationForm registrationForm,
+			@RequestHeader(value = HEADER_STRING) String token) {
+
+		try {
+
+			String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+					.verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+
+			User user = userRepo.findByEmail(email);
+			user.setIme(registrationForm.getIme());
+			user.setPrezime(registrationForm.getPrezime());
+			user.setEmail(registrationForm.getEmail());
+			user.setPassportNumber(registrationForm.getPassportNumber());
+			user.setPassword(registrationForm.getPassword());
+
 			userRepo.saveAndFlush(user);
 
 			return new ResponseEntity<>("success", HttpStatus.ACCEPTED);
