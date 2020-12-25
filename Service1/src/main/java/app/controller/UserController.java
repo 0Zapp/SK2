@@ -26,7 +26,7 @@ import app.repository.UserRepository;
 
 @RestController
 @RequestMapping("/user")
-public class UserController{
+public class UserController {
 
 	private BCryptPasswordEncoder encoder;
 	private UserRepository userRepo;
@@ -83,6 +83,27 @@ public class UserController{
 
 	}
 
+	@GetMapping("/setup")
+	public ResponseEntity<String> setup() {
+		try {
+
+			// izvlacimo iz tokena subject koj je postavljen da bude email
+			User admin = userRepo.findByEmail("admin@admin.com");
+
+			if (admin == null) {
+
+				admin = new User("admin", "admin", "admin@admin.com", 0, encoder.encode("admin"));
+				userRepo.saveAndFlush(admin);
+				admin.setAdmin(true);
+			}
+
+			return new ResponseEntity<>("success", HttpStatus.ACCEPTED);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
 	@GetMapping("/whoAmI")
 	public ResponseEntity<UserInfo_Form> whoAmI(@RequestHeader(value = HEADER_STRING) String token) {
 		try {
@@ -99,6 +120,5 @@ public class UserController{
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
-
 
 }

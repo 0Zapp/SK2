@@ -20,6 +20,8 @@ public class User {
 	
 	private int miles;
 	private String userRank;
+	
+	private boolean isAdmin;
 
 	public User() {
 
@@ -35,6 +37,23 @@ public class User {
 		
 		this.miles = 0;
 		this.userRank = "Bronze";
+		this.isAdmin=false;
+	}
+
+	public String getUserRank() {
+		return userRank;
+	}
+
+	public void setUserRank(String userRank) {
+		this.userRank = userRank;
+	}
+
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
 	}
 
 	public int getMiles() {

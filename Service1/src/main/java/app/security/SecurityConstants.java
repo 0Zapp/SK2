@@ -11,5 +11,6 @@ public final class SecurityConstants {
 
 	public static final String LOGIN_PATH = "/user/login";
 	public static final String REGISTRATION_PATH = "/user/register";
+	public static final String ADMIN_SETUP_PATH = "/user/setup";
 
 }
