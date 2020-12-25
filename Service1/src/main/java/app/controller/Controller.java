@@ -45,7 +45,7 @@ public class Controller {
 		try {
 
 			// iscitavamo entitet iz registracione forme
-			User user = new User(registrationForm.getIme(), registrationForm.getPrezime(), registrationForm.getEmail(),
+			User user = new User(registrationForm.getIme(), registrationForm.getPrezime(), registrationForm.getEmail(), registrationForm.getPassportNumber(),
 					encoder.encode(registrationForm.getPassword()));
 
 			// cuvamo u nasoj bazi ovaj entitet

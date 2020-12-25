@@ -16,17 +16,21 @@ public class User {
 	private String prezime;
 	private String email;
 	private String password;
+	private long passportNumber;
 
 	public User() {
 
 	}
 
-	public User(String ime, String prezime, String email, String password) {
+
+
+	public User(String ime, String prezime, String email, long passportNumber, String password) {
 		super();
 		this.ime = ime;
 		this.prezime = prezime;
 		this.email = email;
 		this.password = password;
+		this.passportNumber = passportNumber;
 	}
 
 	public long getId() {
@@ -67,6 +71,14 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public long getPassportNumber() {
+		return passportNumber;
+	}
+
+	public void setPassportNumber(long passportNumber) {
+		this.passportNumber = passportNumber;
 	}
 
 }

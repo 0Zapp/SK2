@@ -6,12 +6,22 @@ public class RegistrationForm {
 	private String prezime;
 	private String email;
 	private String password;
+	private long passportNumber;
 
-	public RegistrationForm(String ime, String prezime, String email, String password) {
+	public RegistrationForm(String ime, String prezime, String email, String password, long passportNumber) {
 		this.ime = ime;
 		this.prezime = prezime;
 		this.email = email;
 		this.password = password;
+		this.passportNumber = passportNumber;
+	}
+
+	public long getPassportNumber() {
+		return passportNumber;
+	}
+
+	public void setPassportNumber(long passportNumber) {
+		this.passportNumber = passportNumber;
 	}
 
 	public String getIme() {
