@@ -12,8 +12,8 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	private String ime;
-	private String prezime;
+	private String name;
+	private String surrname;
 	private String email;
 	private String password;
 	private long passportNumber;
@@ -22,12 +22,10 @@ public class User {
 
 	}
 
-
-
-	public User(String ime, String prezime, String email, long passportNumber, String password) {
+	public User(String name, String surrname, String email, long passportNumber, String password) {
 		super();
-		this.ime = ime;
-		this.prezime = prezime;
+		this.name = name;
+		this.surrname = surrname;
 		this.email = email;
 		this.password = password;
 		this.passportNumber = passportNumber;
@@ -41,20 +39,20 @@ public class User {
 		this.id = id;
 	}
 
-	public String getIme() {
-		return ime;
+	public String getName() {
+		return name;
 	}
 
-	public void setIme(String ime) {
-		this.ime = ime;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getPrezime() {
-		return prezime;
+	public String getSurrname() {
+		return surrname;
 	}
 
-	public void setPrezime(String prezime) {
-		this.prezime = prezime;
+	public void setSurrname(String surrname) {
+		this.surrname = surrname;
 	}
 
 	public String getEmail() {
@@ -72,7 +70,7 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public long getPassportNumber() {
 		return passportNumber;
 	}

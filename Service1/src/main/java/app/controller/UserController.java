@@ -28,14 +28,14 @@ import app.repository.UserRepository;
 import app.utils.UtilsMethods;
 
 @RestController
-@RequestMapping("")
-public class Controller {
+@RequestMapping("/user")
+public class UserController{
 
 	private BCryptPasswordEncoder encoder;
 	private UserRepository userRepo;
 
 	@Autowired
-	public Controller(BCryptPasswordEncoder encoder, UserRepository userRepo) {
+	public UserController(BCryptPasswordEncoder encoder, UserRepository userRepo) {
 		this.encoder = encoder;
 		this.userRepo = userRepo;
 	}
@@ -70,8 +70,8 @@ public class Controller {
 					.verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
 			User user = userRepo.findByEmail(email);
-			user.setIme(registrationForm.getIme());
-			user.setPrezime(registrationForm.getPrezime());
+			user.setName(registrationForm.getIme());
+			user.setSurrname(registrationForm.getPrezime());
 			user.setEmail(registrationForm.getEmail());
 			user.setPassportNumber(registrationForm.getPassportNumber());
 			user.setPassword(registrationForm.getPassword());
@@ -96,7 +96,7 @@ public class Controller {
 
 			User user = userRepo.findByEmail(email);
 
-			return new ResponseEntity<>(new UserInfo_Form(user.getIme(), user.getPrezime()), HttpStatus.ACCEPTED);
+			return new ResponseEntity<>(new UserInfo_Form(user.getName(), user.getSurrname()), HttpStatus.ACCEPTED);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

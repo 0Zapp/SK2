@@ -9,7 +9,7 @@ public final class SecurityConstants {
 	public static final String HEADER_STRING = "Authorization";
 
 
-	public static final String LOGIN_PATH = "/login";
-	public static final String REGISTRATION_PATH = "/register";
+	public static final String LOGIN_PATH = "/user/login";
+	public static final String REGISTRATION_PATH = "/user/register";
 
 }
