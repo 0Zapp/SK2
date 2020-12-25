@@ -46,7 +46,7 @@ public class UserController{
 		try {
 
 			// iscitavamo entitet iz registracione forme
-			User user = new User(registrationForm.getIme(), registrationForm.getPrezime(), registrationForm.getEmail(),
+			User user = new User(registrationForm.getName(), registrationForm.getSurname(), registrationForm.getEmail(),
 					registrationForm.getPassportNumber(), encoder.encode(registrationForm.getPassword()));
 
 			// cuvamo u nasoj bazi ovaj entitet
@@ -70,8 +70,8 @@ public class UserController{
 					.verify(token.replace(TOKEN_PREFIX, "")).getSubject();
 
 			User user = userRepo.findByEmail(email);
-			user.setName(registrationForm.getIme());
-			user.setSurrname(registrationForm.getPrezime());
+			user.setName(registrationForm.getName());
+			user.setSurrname(registrationForm.getSurname());
 			user.setEmail(registrationForm.getEmail());
 			user.setPassportNumber(registrationForm.getPassportNumber());
 			user.setPassword(registrationForm.getPassword());
