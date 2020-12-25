@@ -17,6 +17,9 @@ public class User {
 	private String email;
 	private String password;
 	private long passportNumber;
+	
+	private int miles;
+	private String userRank;
 
 	public User() {
 
@@ -29,6 +32,25 @@ public class User {
 		this.email = email;
 		this.password = password;
 		this.passportNumber = passportNumber;
+		
+		this.miles = 0;
+		this.userRank = "Bronze";
+	}
+
+	public int getMiles() {
+		return miles;
+	}
+
+	public void setMiles(int miles) {
+		this.miles = miles;
+	}
+
+	public String getRank() {
+		return userRank;
+	}
+
+	public void setRank(String rank) {
+		this.userRank = rank;
 	}
 
 	public long getId() {

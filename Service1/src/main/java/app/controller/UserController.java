@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -22,10 +21,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 
 import app.entities.User;
 import app.forms.RegistrationForm;
-import app.forms.TwoNumbers;
 import app.forms.UserInfo_Form;
 import app.repository.UserRepository;
-import app.utils.UtilsMethods;
 
 @RestController
 @RequestMapping("/user")
@@ -103,32 +100,5 @@ public class UserController{
 		}
 	}
 
-	@GetMapping("/addition/{x}/{y}")
-	public ResponseEntity<Integer> addition(@PathVariable int x, @PathVariable int y) {
-		try {
-
-			ResponseEntity<Integer> response = UtilsMethods
-					.sendGet("http://localhost:8081/calculate/addition/" + x + "/" + y);
-
-			return response;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@PostMapping("/subtraction")
-	public ResponseEntity<Integer> subtraction(@RequestBody TwoNumbers dvaBroja) {
-		try {
-
-			ResponseEntity<Integer> response = UtilsMethods.sendPost("http://localhost:8081/calculate/subtractionPost",
-					dvaBroja);
-
-			return response;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-	}
 
 }
