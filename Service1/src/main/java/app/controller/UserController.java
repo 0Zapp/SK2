@@ -43,15 +43,19 @@ public class UserController {
 	public ResponseEntity<String> register(@RequestBody RegistrationForm registrationForm) {
 
 		try {
+			User user = userRepo.findByEmail(registrationForm.getEmail());
+			if (user == null) {
+				user = new User(registrationForm.getName(), registrationForm.getSurname(), registrationForm.getEmail(),
+						registrationForm.getPassportNumber(), encoder.encode(registrationForm.getPassword()));
 
-			User user = new User(registrationForm.getName(), registrationForm.getSurname(), registrationForm.getEmail(),
-					registrationForm.getPassportNumber(), encoder.encode(registrationForm.getPassword()));
+				sendEmail(registrationForm.getEmail());
 
-			sendEmail(registrationForm.getEmail());
+				userRepo.saveAndFlush(user);
 
-			userRepo.saveAndFlush(user);
-
-			return new ResponseEntity<>("success", HttpStatus.ACCEPTED);
+				return new ResponseEntity<>("success", HttpStatus.ACCEPTED);
+			} else {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
