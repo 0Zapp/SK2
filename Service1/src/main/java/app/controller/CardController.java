@@ -51,7 +51,7 @@ public class CardController {
 			User user = userRepo.findByEmail(email);
 
 			Card card = new Card(user.getName(), user.getSurrname(), cardForm.getCardNumber(),
-					cardForm.getSecurityNumber());
+					cardForm.getSecurityNumber(), user.getId());
 
 			cardRepo.saveAndFlush(card);
 

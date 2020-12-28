@@ -17,10 +17,10 @@ public class User {
 	private String email;
 	private String password;
 	private long passportNumber;
-	
+
 	private int miles;
 	private String userRank;
-	
+
 	private boolean isAdmin;
 
 	public User() {
@@ -34,10 +34,20 @@ public class User {
 		this.email = email;
 		this.password = password;
 		this.passportNumber = passportNumber;
-		
+
 		this.miles = 0;
 		this.userRank = "Bronze";
-		this.isAdmin=false;
+		this.isAdmin = false;
+	}
+
+	public void updateRank() {
+		if (this.miles > 10000) {
+			this.userRank = "Gold";
+		} else if (this.miles > 1000) {
+			this.userRank = "Silver";
+		} else {
+			this.userRank = "Bronze";
+		}
 	}
 
 	public String getUserRank() {

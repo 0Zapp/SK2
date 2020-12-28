@@ -4,6 +4,8 @@ import static app.security.SecurityConstants.HEADER_STRING;
 import static app.security.SecurityConstants.SECRET;
 import static app.security.SecurityConstants.TOKEN_PREFIX;
 
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,11 +44,11 @@ public class UserController {
 
 		try {
 
-			// iscitavamo entitet iz registracione forme
 			User user = new User(registrationForm.getName(), registrationForm.getSurname(), registrationForm.getEmail(),
 					registrationForm.getPassportNumber(), encoder.encode(registrationForm.getPassword()));
 
-			// cuvamo u nasoj bazi ovaj entitet
+			sendEmail(registrationForm.getEmail());
+
 			userRepo.saveAndFlush(user);
 
 			return new ResponseEntity<>("success", HttpStatus.ACCEPTED);
@@ -69,6 +71,11 @@ public class UserController {
 			User user = userRepo.findByEmail(email);
 			user.setName(registrationForm.getName());
 			user.setSurrname(registrationForm.getSurname());
+
+			if (!user.getEmail().equals(registrationForm.getEmail())) {
+				sendEmail(registrationForm.getEmail());
+			}
+
 			user.setEmail(registrationForm.getEmail());
 			user.setPassportNumber(registrationForm.getPassportNumber());
 			user.setPassword(registrationForm.getPassword());
@@ -87,7 +94,6 @@ public class UserController {
 	public ResponseEntity<String> setup() {
 		try {
 
-			// izvlacimo iz tokena subject koj je postavljen da bude email
 			User admin = userRepo.findByEmail("admin@admin.com");
 
 			if (admin == null) {
@@ -104,21 +110,22 @@ public class UserController {
 		}
 	}
 
-	@GetMapping("/whoAmI")
-	public ResponseEntity<UserInfo_Form> whoAmI(@RequestHeader(value = HEADER_STRING) String token) {
-		try {
+	public void sendEmail(String email) {
+		System.out.println("Sending email to:" + email);
 
-			// izvlacimo iz tokena subject koj je postavljen da bude email
-			String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
-					.verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+		Random rand = new Random();
 
-			User user = userRepo.findByEmail(email);
-
-			return new ResponseEntity<>(new UserInfo_Form(user.getName(), user.getSurrname()), HttpStatus.ACCEPTED);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		for (int i = 0; i < rand.nextInt(10); i++) {
+			try {
+				Thread.sleep(1000);
+				System.out.println("Sending...");
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+
+		System.out.println("Email sent to:" + email);
 	}
 
 }
