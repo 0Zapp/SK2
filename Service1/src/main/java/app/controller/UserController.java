@@ -4,6 +4,7 @@ import static app.security.SecurityConstants.HEADER_STRING;
 import static app.security.SecurityConstants.SECRET;
 import static app.security.SecurityConstants.TOKEN_PREFIX;
 
+import java.util.Properties;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,10 @@ import app.entities.User;
 import app.forms.RegistrationForm;
 import app.forms.UserInfo_Form;
 import app.repository.UserRepository;
+
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.activation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -48,7 +53,7 @@ public class UserController {
 				user = new User(registrationForm.getName(), registrationForm.getSurname(), registrationForm.getEmail(),
 						registrationForm.getPassportNumber(), encoder.encode(registrationForm.getPassword()));
 
-				sendEmail(registrationForm.getEmail());
+				// sendEmail(registrationForm.getEmail());
 
 				userRepo.saveAndFlush(user);
 
@@ -77,7 +82,7 @@ public class UserController {
 			user.setSurrname(registrationForm.getSurname());
 
 			if (!user.getEmail().equals(registrationForm.getEmail())) {
-				sendEmail(registrationForm.getEmail());
+				// sendEmail(registrationForm.getEmail());
 			}
 
 			user.setEmail(registrationForm.getEmail());
@@ -137,21 +142,46 @@ public class UserController {
 	}
 
 	public void sendEmail(String email) {
-		System.out.println("Sending email to:" + email);
+		// Recipient's email ID needs to be mentioned.
+		String to = "abcd@gmail.com";
 
-		Random rand = new Random();
+		// Sender's email ID needs to be mentioned
+		String from = "web@gmail.com";
 
-		for (int i = 0; i < rand.nextInt(10); i++) {
-			try {
-				Thread.sleep(1000);
-				System.out.println("Sending...");
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		// Assuming you are sending email from localhost
+		String host = "localhost";
+
+		// Get system properties
+		Properties properties = System.getProperties();
+
+		// Setup mail server
+		properties.setProperty("mail.smtp.host", host);
+
+		// Get the default Session object.
+		Session session = Session.getDefaultInstance(properties);
+
+		try {
+			// Create a default MimeMessage object.
+			MimeMessage message = new MimeMessage(session);
+
+			// Set From: header field of the header.
+			message.setFrom(new InternetAddress(from));
+
+			// Set To: header field of the header.
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+
+			// Set Subject: header field
+			message.setSubject("This is the Subject Line!");
+
+			// Now set the actual message
+			message.setText("This is actual message");
+
+			// Send message
+			Transport.send(message);
+			System.out.println("Sent message successfully....");
+		} catch (MessagingException mex) {
+			mex.printStackTrace();
 		}
-
-		System.out.println("Email sent to:" + email);
 	}
 
 }
