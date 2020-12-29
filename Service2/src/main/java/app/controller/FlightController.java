@@ -63,6 +63,7 @@ public class FlightController {
 
 		try {
 
+			//sredi preko message brokera sistem
 			ResponseEntity<Integer> response = UtilsMethods.sendGet("http://localhost:8080/user/isAdmin/", token);
 			if (response.getBody() == 1) {
 				flightRepo.deleteById(x);
