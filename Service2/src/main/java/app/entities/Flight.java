@@ -12,23 +12,27 @@ public class Flight {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long FlightId;
 
-	private long planeID;
+	private Long planeID;
 	private String startingDestination;
 	private String endingDestination;
-	private long duration;
-	private int price;
+	private Long duration;
+	private Integer price;
 
 	public Flight() {
 
 	}
 
-	public Flight(long planeID, String startingDestination, String endingDestination, long duration, int price) {
+	public Flight(Long planeID, String startingDestination, String endingDestination, Long duration, Integer price) {
 		super();
 		this.planeID = planeID;
 		this.startingDestination = startingDestination;
 		this.endingDestination = endingDestination;
 		this.duration = duration;
 		this.price = price;
+	}
+
+	public static Flight from(Long planeID, String startingDestination, String endingDestination, Long duration, Integer price) {
+		return new Flight(planeID, startingDestination, endingDestination, duration, price);
 	}
 
 	public long getFlightId() {
@@ -39,11 +43,11 @@ public class Flight {
 		FlightId = flightId;
 	}
 
-	public long getPlaneID() {
+	public Long getPlaneID() {
 		return planeID;
 	}
 
-	public void setPlaneID(long planeID) {
+	public void setPlaneID(Long planeID) {
 		this.planeID = planeID;
 	}
 
@@ -63,20 +67,21 @@ public class Flight {
 		this.endingDestination = endingDestination;
 	}
 
-	public long getDuration() {
+	public Long getDuration() {
 		return duration;
 	}
 
-	public void setDuration(long duration) {
+	public void setDuration(Long duration) {
 		this.duration = duration;
 	}
 
-	public int getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(Integer price) {
 		this.price = price;
 	}
+
 
 }

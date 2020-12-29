@@ -72,6 +72,7 @@ public class User {
 
 	public void setMiles(int miles) {
 		this.miles = miles;
+		updateRank();
 	}
 
 	public String getRank() {
