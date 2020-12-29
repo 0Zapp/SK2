@@ -2,6 +2,8 @@ package app.controller;
 
 import static app.security.SecurityConstants.HEADER_STRING;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.entities.Flight;
 import app.entities.Plane;
 import app.forms.PlaneForm;
+import app.repository.FlightRepository;
 import app.repository.PlaneRepository;
 import app.utils.UtilsMethods;
 
@@ -23,10 +27,12 @@ import app.utils.UtilsMethods;
 public class PlaneController {
 
 	private PlaneRepository planeRepo;
+	private FlightRepository flightRepo;
 
 	@Autowired
-	public PlaneController(PlaneRepository planeRepo) {
+	public PlaneController(PlaneRepository planeRepo, FlightRepository flightRepo) {
 		this.planeRepo = planeRepo;
+		this.flightRepo = flightRepo;
 	}
 
 	@PostMapping("/addNew")
@@ -55,6 +61,10 @@ public class PlaneController {
 	public ResponseEntity<Long> deletePlane(@PathVariable Long x, @RequestHeader(value = HEADER_STRING) String token) {
 
 		try {
+			if (flightRepo.existsByPlaneID(x)) {
+				return new ResponseEntity<Long>(HttpStatus.CONFLICT);
+			}
+
 			ResponseEntity<Integer> response = UtilsMethods.sendGet("http://localhost:8080/user/isAdmin/", token);
 			if (response.getBody() == 1) {
 
