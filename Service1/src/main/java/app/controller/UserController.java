@@ -103,14 +103,36 @@ public class UserController {
 			if (admin == null) {
 
 				admin = new User("admin", "admin", "admin@admin.com", 0, encoder.encode("admin"));
-				userRepo.saveAndFlush(admin);
 				admin.setAdmin(true);
+				userRepo.saveAndFlush(admin);
+
 			}
 
 			return new ResponseEntity<>("success", HttpStatus.ACCEPTED);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@GetMapping("/isAdmin")
+	public ResponseEntity<Integer> isAdmin(@RequestHeader(value = HEADER_STRING) String token) {
+		try {
+
+			String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+					.verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+
+			User user = userRepo.findByEmail(email);
+
+			if (user != null && user.isAdmin()) {
+				return new ResponseEntity<>(1, HttpStatus.ACCEPTED);
+			} else {
+				return new ResponseEntity<>(-1, HttpStatus.ACCEPTED);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(-1, HttpStatus.BAD_REQUEST);
 		}
 	}
 

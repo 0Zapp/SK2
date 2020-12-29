@@ -1,5 +1,7 @@
 package app.controller;
 
+import static app.security.SecurityConstants.HEADER_STRING;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -14,12 +16,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.entities.Flight;
 import app.forms.FlightForm;
 import app.repository.FlightRepository;
+import app.utils.UtilsMethods;
 
 @RestController
 @RequestMapping("/flight")
@@ -33,15 +37,21 @@ public class FlightController {
 	}
 
 	@PostMapping("/addNew")
-	public ResponseEntity<String> addNewFlight(@RequestBody FlightForm flightForm) {
+	public ResponseEntity<String> addNewFlight(@RequestBody FlightForm flightForm,
+			@RequestHeader(value = HEADER_STRING) String token) {
 		try {
 
-			Flight flight = new Flight(flightForm.getPlaneID(), flightForm.getStartingDestination(),
-					flightForm.getEndingDestination(), flightForm.getDuration(), flightForm.getPrice());
+			ResponseEntity<Integer> response = UtilsMethods.sendGet("http://localhost:8080/user/isAdmin/", token);
+			if (response.getBody() == 1) {
+				Flight flight = new Flight(flightForm.getPlaneID(), flightForm.getStartingDestination(),
+						flightForm.getEndingDestination(), flightForm.getDuration(), flightForm.getPrice());
 
-			flightRepo.saveAndFlush(flight);
+				flightRepo.saveAndFlush(flight);
 
-			return new ResponseEntity<String>("success", HttpStatus.ACCEPTED);
+				return new ResponseEntity<String>("success", HttpStatus.ACCEPTED);
+			} else {
+				return new ResponseEntity<String>(HttpStatus.FORBIDDEN);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -49,11 +59,17 @@ public class FlightController {
 	}
 
 	@DeleteMapping("/delete/{x}")
-	public ResponseEntity<Long> deleteFlight(@PathVariable Long x) {
+	public ResponseEntity<Long> deleteFlight(@PathVariable Long x, @RequestHeader(value = HEADER_STRING) String token) {
 
 		try {
-			flightRepo.deleteById(x);
-			return new ResponseEntity<Long>(x, HttpStatus.ACCEPTED);
+
+			ResponseEntity<Integer> response = UtilsMethods.sendGet("http://localhost:8080/user/isAdmin/", token);
+			if (response.getBody() == 1) {
+				flightRepo.deleteById(x);
+				return new ResponseEntity<Long>(x, HttpStatus.ACCEPTED);
+			} else {
+				return new ResponseEntity<Long>(HttpStatus.FORBIDDEN);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<Long>(HttpStatus.BAD_REQUEST);
