@@ -88,6 +88,8 @@ public class TicketController {
 			for (Ticket ticket : tickets) {
 				ticket.setStatus("canceled");
 				ticketRepo.saveAndFlush(ticket);
+				Flight flight = UtilsMethods.sendGet("http://localhost:8081/flight/get/" + ticket.getFlightId(), token, Flight.class).getBody();
+				String status = UtilsMethods.sendGet("http://localhost:8080/user/removeMiles/" + ticket.getUserId() + "/" + flight.getDuration().toString(), token, String.class).getBody();
 			}
 			return new ResponseEntity<String>("success", HttpStatus.OK);
 		} catch (Exception e) {

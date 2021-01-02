@@ -175,6 +175,20 @@ public class UserController {
 			return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@GetMapping("/removeMiles/{userId}/{miles}")
+	public ResponseEntity<String> addmiles(@PathVariable Long userId, @PathVariable Integer miles, @RequestHeader(value = HEADER_STRING) String token) {
+		try {
+			User user = userRepo.findById(userId).get();
+			user.setMiles(user.getMiles() - miles);
+			userRepo.saveAndFlush(user);
+			return new ResponseEntity<>("success", HttpStatus.ACCEPTED);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
+		}
+	}
 
 	public void sendEmail(String email) {
 		// Recipient's email ID needs to be mentioned.
