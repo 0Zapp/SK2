@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -138,6 +139,40 @@ public class UserController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(-1, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/get")
+	public ResponseEntity<User> getUser(@RequestHeader(value = HEADER_STRING) String token) {
+		try {
+
+			String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+					.verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+
+			User user = userRepo.findByEmail(email);
+			return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/addMiles/{miles}")
+	public ResponseEntity<String> addmiles(@PathVariable Integer miles, @RequestHeader(value = HEADER_STRING) String token) {
+		try {
+
+			String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+					.verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+
+			User user = userRepo.findByEmail(email);
+			user.setMiles(user.getMiles() + miles);
+			userRepo.saveAndFlush(user);
+			return new ResponseEntity<>("success", HttpStatus.ACCEPTED);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
 		}
 	}
 

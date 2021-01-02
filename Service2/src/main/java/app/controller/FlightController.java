@@ -2,6 +2,8 @@ package app.controller;
 
 import static app.security.SecurityConstants.HEADER_STRING;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -21,8 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.entities.Flight;
+import app.entities.Plane;
 import app.forms.FlightForm;
 import app.repository.FlightRepository;
+import app.repository.PlaneRepository;
 import app.utils.UtilsMethods;
 
 @RestController
@@ -30,12 +34,26 @@ import app.utils.UtilsMethods;
 public class FlightController {
 
 	private FlightRepository flightRepo;
+	private PlaneRepository planeRepo;
 
 	@Autowired
-	public FlightController(FlightRepository flightRepo) {
+	public FlightController(FlightRepository flightRepo, PlaneRepository planeRepo) {
 		this.flightRepo = flightRepo;
+		this.planeRepo = planeRepo;
 	}
 
+	@GetMapping("/get/{flightId}")
+	public ResponseEntity<Flight> getById(@PathVariable Long flightId, @RequestHeader(value = HEADER_STRING) String token){
+		try {
+			ResponseEntity<Integer> response = UtilsMethods.sendGet("http://localhost:8080/user/isAdmin/", token);
+			Flight flight = flightRepo.findById(flightId).get();
+			return new ResponseEntity<Flight>(flight, HttpStatus.ACCEPTED);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Flight>(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 	@PostMapping("/addNew")
 	public ResponseEntity<String> addNewFlight(@RequestBody FlightForm flightForm,
 			@RequestHeader(value = HEADER_STRING) String token) {
@@ -93,6 +111,20 @@ public class FlightController {
 		}
 
 	}
+	
+	@GetMapping("/flightFull/{flightId}/{count}")
+	public ResponseEntity<Boolean> isFlightFull(@PathVariable Long flightId, @PathVariable Long count, @RequestHeader(value = HEADER_STRING) String token){
+		try {
+			Flight flight = flightRepo.findById(flightId).get();
+			Long planeId = flight.getPlaneID();
+			Plane plane = planeRepo.findById(planeId).get();
+			Boolean result = count >= plane.getCapacity();
+			return new ResponseEntity<Boolean>(result, HttpStatus.ACCEPTED);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Boolean>(HttpStatus.BAD_REQUEST);
+		}
+	}
 
 	@PostMapping("/search/{page}/{size}")
 	public ResponseEntity<Page<Flight>> sort(@PathVariable int page, @PathVariable int size,
@@ -123,4 +155,6 @@ public class FlightController {
 		}
 
 	}
+	
+	
 }
