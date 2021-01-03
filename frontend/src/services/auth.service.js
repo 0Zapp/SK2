@@ -36,6 +36,14 @@ class AuthService {
     isAdmin() {
         return axios.get(API_URL + 'user/isAdmin', { headers: authHeader() });
     }
+
+    getUser() {
+        return axios.get(API_URL + 'user/get', { headers: authHeader() });
+    }
+
+    updateUser(data) {
+        return axios.patch(API_URL + 'user/update', data, { headers: authHeader() })
+    }
 }
 
 export default new AuthService();

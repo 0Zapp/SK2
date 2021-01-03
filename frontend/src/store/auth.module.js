@@ -10,9 +10,6 @@ export const auth = {
         login({ commit }, user) {
             return AuthService.login(user).then(
                 user => {
-                    AuthService.isAdmin().then((response) => {
-                        console.log(response);
-                    });
                     commit('loginSuccess', user);
                     return Promise.resolve(user);
                 },
