@@ -8,14 +8,9 @@
 						<font-awesome-icon icon="home" />Home
 					</router-link>
 				</li>
-				<li v-if="showAdminBoard" class="nav-item">
-					<router-link to="/admin" class="nav-link"
-						>Admin Board</router-link
-					>
-				</li>
-				<li class="nav-item">
-					<router-link v-if="currentUser" to="/user" class="nav-link"
-						>User</router-link
+				<li v-if="showAdmin" class="nav-item">
+					<router-link to="/flights" class="nav-link"
+						>Flights</router-link
 					>
 				</li>
 			</div>
@@ -62,9 +57,10 @@ export default {
 			return this.$store.state.auth.user;
         },
         isAdmin() {
+            console.log(this.$store.state)
             return this.$store.state.auth.isAdmin;
         },
-		showAdminBoard() {
+		showAdmin() {
             console.log(this.isAdmin)
 			return this.isAdmin == 1;
 		}

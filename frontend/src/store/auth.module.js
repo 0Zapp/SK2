@@ -1,7 +1,10 @@
 import AuthService from '../services/auth.service';
 
 const user = JSON.parse(localStorage.getItem('user'));
-const initialState = user ? { status: { loggedIn: true }, user } : { status: { loggedIn: false }, user: null };
+const isAdmin = JSON.parse(localStorage.getItem('isAdmin'))
+console.log('isadmin')
+console.log(isAdmin)
+const initialState = user ? { status: { loggedIn: true }, user, isAdmin } : { status: { loggedIn: false }, user: null, isAdmin: null };
 
 export const auth = {
     namespaced: true,
@@ -41,13 +44,14 @@ export const auth = {
             state.status.loggedIn = true;
             state.user = user;
             AuthService.isAdmin().then((response) => {
+                localStorage.setItem('isAdmin', JSON.stringify(response.data));
                 state.isAdmin = response.data
             });
         },
         loginFailure(state) {
             state.status.loggedIn = false;
             state.user = null;
-            state.isAdmin = null;
+            state.isAdmin = -1;
         },
         logout(state) {
             state.status.loggedIn = false;

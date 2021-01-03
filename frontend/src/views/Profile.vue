@@ -29,7 +29,7 @@
         <h3>Cards</h3>
     </header>
     <div>
-        <div class="card" v-for="(card, index) in cards" v-bind:key="index">
+        <div class="myCard" v-for="(card, index) in cards" v-bind:key="index">
             <p>{{ card.cardNumber}}</p>
         </div>
     </div>
@@ -101,11 +101,11 @@ export default {
   },
 };
 </script>
-<style lang="css">
+<style scoped>
     label {
         margin-right: 10px;
     }
-    .card {
+    .myCard {
         border: 1px solid red;
         margin: 5px
     }
