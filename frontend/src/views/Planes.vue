@@ -59,12 +59,12 @@ export default {
 			});
         },
         deletePlane(planeId) {
-            planeService.delete(planeId).then(response => {
+            planeService.delete(planeId).then( () => {
                 this.showPlanes()
             })
         },
         addPlane() {
-            planeService.add(this.newPlane).then(response => {
+            planeService.add(this.newPlane).then( () => {
                 this.showPlanes()
             })
         }

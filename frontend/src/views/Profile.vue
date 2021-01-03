@@ -25,37 +25,40 @@
         <input type="password" v-model="password">
         <button @click="savePassword">Save password</button>
     </div>
+
+    <card/>
+
     <header class = "jumbotron">
-        <h3>Cards</h3>
+        <h3>Tickets</h3>
     </header>
     <div>
-        <div class="myCard" v-for="(card, index) in cards" v-bind:key="index">
-            <p>{{ card.cardNumber}}</p>
+        <div class="myCard" v-for="(ticket, index) in tickets" v-bind:key="index">
+            <p>Flight ID: {{ticket.flightId}}</p>
+            <p>Card ID: {{ticket.cardId}}</p>
+            <p>Date: {{ticket.date}}</p>
+            <p>Price: {{ticket.price}}</p>
+            <p>Status: {{ticket.status}}</p>
         </div>
-    </div>
-    <div>
-        <input type="number" v-model="newCard.cardNumber">
-        <input type="number" v-model="newCard.securityNumber">
-        <button @click="addCard">Add card</button>
     </div>
   </div>
 </template>
 
 <script>
 import authService from '../services/auth.service';
-import cardService from '../services/card.service';
+import ticketService from '../services/ticket.service';
+import Card from './Card'
 
 export default {
   name: 'Profile',
+  components: {
+      Card
+    },
   data() {
       return {
-          user: {email: "abcd"},
-          cards: [],
+          user: {},
+          tickets: [],
           password: '',
-          newCard: {
-              cardNumber: null,
-              securityNumber: null
-          }
+          
       }
   },
   computed: {
@@ -71,16 +74,16 @@ export default {
             delete response.data.password 
             this.user = {...response.data}
         })
-        this.loadCards()
+        this.loadTickets()
     }
   },
   methods: {
-      loadCards() {
-            cardService.getCards().then(response => {
-            console.log(response.data)
-            this.cards = [...response.data]
-        })
-      },
+      loadTickets() {
+          ticketService.getTickets().then(response => {
+              console.log(response.data)
+              this.tickets = [...response.data]
+          })
+      },   
       save() {
           authService.updateUser(this.user).then(response => {
               console.log(response)
@@ -90,12 +93,6 @@ export default {
           this.user.password = this.password
           authService.updateUser(this.user).then(response => {
               console.log(response)
-          })
-      },
-      addCard() {
-          cardService.addCard(this.newCard).then(response => {
-              console.log(response)
-              this.loadCards()
           })
       }
   },
@@ -107,6 +104,7 @@ export default {
     }
     .myCard {
         border: 1px solid red;
-        margin: 5px
+        margin: 5px;
+        padding: 10px;
     }
 </style>
