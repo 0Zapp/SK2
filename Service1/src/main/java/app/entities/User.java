@@ -13,7 +13,7 @@ public class User {
 	private long id;
 
 	private String name;
-	private String surrname;
+	private String surname;
 	private String email;
 	private String password;
 	private long passportNumber;
@@ -27,10 +27,10 @@ public class User {
 
 	}
 
-	public User(String name, String surrname, String email, long passportNumber, String password) {
+	public User(String name, String surname, String email, long passportNumber, String password) {
 		super();
 		this.name = name;
-		this.surrname = surrname;
+		this.surname = surname;
 		this.email = email;
 		this.password = password;
 		this.passportNumber = passportNumber;
@@ -99,12 +99,12 @@ public class User {
 		this.name = name;
 	}
 
-	public String getSurrname() {
-		return surrname;
+	public String getSurname() {
+		return surname;
 	}
 
-	public void setSurrname(String surrname) {
-		this.surrname = surrname;
+	public void setSurname(String surname) {
+		this.surname = surname;
 	}
 
 	public String getEmail() {

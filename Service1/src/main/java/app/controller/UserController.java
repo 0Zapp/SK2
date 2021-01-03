@@ -80,7 +80,7 @@ public class UserController {
 
 			User user = userRepo.findByEmail(email);
 			user.setName(registrationForm.getName());
-			user.setSurrname(registrationForm.getSurname());
+			user.setSurname(registrationForm.getSurname());
 
 			if (!user.getEmail().equals(registrationForm.getEmail())) {
 				// sendEmail(registrationForm.getEmail());
@@ -88,7 +88,8 @@ public class UserController {
 
 			user.setEmail(registrationForm.getEmail());
 			user.setPassportNumber(registrationForm.getPassportNumber());
-			user.setPassword(registrationForm.getPassword());
+			if (registrationForm.getPassword() != null)
+				user.setPassword(encoder.encode(registrationForm.getPassword()));
 
 			userRepo.saveAndFlush(user);
 

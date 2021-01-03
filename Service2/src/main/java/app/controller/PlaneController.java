@@ -2,12 +2,13 @@ package app.controller;
 
 import static app.security.SecurityConstants.HEADER_STRING;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import app.entities.Flight;
 import app.entities.Plane;
 import app.forms.PlaneForm;
 import app.repository.FlightRepository;
@@ -79,6 +79,18 @@ public class PlaneController {
 			return new ResponseEntity<Long>(HttpStatus.BAD_REQUEST);
 		}
 
+	}
+	
+	@GetMapping("/getAll")
+	public ResponseEntity<List<Plane>> getPlanes(@RequestHeader(value = HEADER_STRING) String token) {
+		try {
+			List<Plane> planes = planeRepo.findAll();
+
+			return new ResponseEntity<>(planes, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 	}
 
 }
