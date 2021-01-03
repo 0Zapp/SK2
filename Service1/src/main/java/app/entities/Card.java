@@ -17,19 +17,19 @@ public class Card {
 	long cardNumber;
 	int securityNumber;
 
-	long UserId;
+	long userId;
 
 	public Card() {
 
 	}
 
-	public Card(String userName, String userSurname, long cardNumber, int securityNumber, long USerId) {
+	public Card(String userName, String userSurname, long cardNumber, int securityNumber, long userId) {
 		super();
 		UserName = userName;
 		UserSurname = userSurname;
 		this.cardNumber = cardNumber;
 		this.securityNumber = securityNumber;
-		this.UserId = USerId;
+		this.userId = userId;
 	}
 
 	public String getUserName() {
@@ -49,11 +49,11 @@ public class Card {
 	}
 
 	public long getUserId() {
-		return UserId;
+		return userId;
 	}
 
 	public void setUserId(long userId) {
-		UserId = userId;
+		this.userId = userId;
 	}
 
 	public long getCardId() {
