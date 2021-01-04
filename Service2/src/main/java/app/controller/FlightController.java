@@ -4,6 +4,8 @@ import static app.security.SecurityConstants.HEADER_STRING;
 
 import java.util.Optional;
 
+import javax.jms.Queue;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +35,16 @@ import app.utils.UtilsMethods;
 @RestController
 @RequestMapping("/flight")
 public class FlightController {
+	
+	
+	@Autowired
+	JmsTemplate jmsTemplate;
+
+	@Autowired
+	Queue ticketQueue;
+
+	@Autowired
+	Queue userQueue;
 
 	private FlightRepository flightRepo;
 	private PlaneRepository planeRepo;
@@ -81,10 +94,12 @@ public class FlightController {
 
 		try {
 
-			//sredi preko message brokera sistem
 			ResponseEntity<Integer> response = UtilsMethods.sendGet("http://localhost:8080/user/isAdmin/", token);
 			if (response.getBody() == 1) {
 				flightRepo.deleteById(x);
+				
+				jmsTemplate.convertAndSend(ticketQueue, x);
+				jmsTemplate.convertAndSend(userQueue, x);
 				return new ResponseEntity<Long>(x, HttpStatus.ACCEPTED);
 			} else {
 				return new ResponseEntity<Long>(HttpStatus.FORBIDDEN);
