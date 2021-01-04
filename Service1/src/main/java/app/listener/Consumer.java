@@ -33,7 +33,7 @@ public class Consumer {
 			ResponseEntity<Integer> response = UtilsMethods.sendGet("http://localhost:8080/findUserIDs/" + flightID);
 			ArrayList<Long> userIDs = new ArrayList<>();
 			for (long id : userIDs) {
-				User user = userRepo.findByID(id);
+				User user = userRepo.findById(id);
 
 				String Subject = "Your filght has been canceled";
 				String Text = "Your flight was just cancelled";
