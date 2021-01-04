@@ -18,15 +18,20 @@ public class Consumer {
 	public Consumer(TicketRepository ticketRepo) {
 		this.ticketRepo = ticketRepo;
 	}
-	
+
 	@JmsListener(destination = "ticket.queue")
 	public void consume(Long flightID) {
 
-		ArrayList<Ticket> tickets = (ArrayList<Ticket>) ticketRepo.findByFlightId(flightID);
-		for (Ticket ticket : tickets) {
-			ticket.setStatus("canceled");
-			ticketRepo.saveAndFlush(ticket);
+		System.out.println("cancelluj sve karte sa nasim flightIdjem");
+		boolean active = false;
 
+		if (active) {
+			ArrayList<Ticket> tickets = (ArrayList<Ticket>) ticketRepo.findByFlightId(flightID);
+			for (Ticket ticket : tickets) {
+				ticket.setStatus("canceled");
+				ticketRepo.saveAndFlush(ticket);
+
+			}
 		}
 
 	}

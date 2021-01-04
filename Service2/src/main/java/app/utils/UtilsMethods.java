@@ -36,4 +36,17 @@ public class UtilsMethods {
 		return response;
 	}
 
+	public static ResponseEntity<Boolean> isUser(String token) {
+
+		String url = "http://localhost:8080/user/isUser/";
+		RestTemplate restTemplate = new RestTemplate();
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HEADER_STRING, token);
+		HttpEntity<String> entity = new HttpEntity<String>(null, headers);
+
+		ResponseEntity<Boolean> response = restTemplate.exchange(url, HttpMethod.GET, entity, Boolean.class);
+		return response;
+	}
+
 }

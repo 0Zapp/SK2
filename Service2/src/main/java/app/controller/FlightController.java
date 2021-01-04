@@ -35,8 +35,7 @@ import app.utils.UtilsMethods;
 @RestController
 @RequestMapping("/flight")
 public class FlightController {
-	
-	
+
 	@Autowired
 	JmsTemplate jmsTemplate;
 
@@ -56,9 +55,14 @@ public class FlightController {
 	}
 
 	@GetMapping("/get/{flightId}")
-	public ResponseEntity<Flight> getById(@PathVariable Long flightId, @RequestHeader(value = HEADER_STRING) String token){
+	public ResponseEntity<Flight> getById(@PathVariable Long flightId,
+			@RequestHeader(value = HEADER_STRING) String token) {
 		try {
-			ResponseEntity<Integer> response = UtilsMethods.sendGet("http://localhost:8080/user/isAdmin/", token);
+			ResponseEntity<Boolean> response = UtilsMethods.isUser(token);
+			if (response.getStatusCode() == HttpStatus.FORBIDDEN) {
+				return new ResponseEntity<Flight>(HttpStatus.FORBIDDEN);
+			}
+
 			Flight flight = flightRepo.findById(flightId).get();
 			return new ResponseEntity<Flight>(flight, HttpStatus.ACCEPTED);
 		} catch (Exception e) {
@@ -66,11 +70,15 @@ public class FlightController {
 			return new ResponseEntity<Flight>(HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	@PostMapping("/addNew")
 	public ResponseEntity<String> addNewFlight(@RequestBody FlightForm flightForm,
 			@RequestHeader(value = HEADER_STRING) String token) {
 		try {
+			ResponseEntity<Boolean> responseUser = UtilsMethods.isUser(token);
+			if (responseUser.getStatusCode() == HttpStatus.FORBIDDEN) {
+				return new ResponseEntity<String>(HttpStatus.FORBIDDEN);
+			}
 
 			ResponseEntity<Integer> response = UtilsMethods.sendGet("http://localhost:8080/user/isAdmin/", token);
 			if (response.getBody() == 1) {
@@ -94,10 +102,15 @@ public class FlightController {
 
 		try {
 
+			ResponseEntity<Boolean> responseUser = UtilsMethods.isUser(token);
+			if (responseUser.getStatusCode() == HttpStatus.FORBIDDEN) {
+				return new ResponseEntity<Long>(HttpStatus.FORBIDDEN);
+			}
+
 			ResponseEntity<Integer> response = UtilsMethods.sendGet("http://localhost:8080/user/isAdmin/", token);
 			if (response.getBody() == 1) {
 				flightRepo.deleteById(x);
-				
+
 				jmsTemplate.convertAndSend(ticketQueue, x);
 				jmsTemplate.convertAndSend(userQueue, x);
 				return new ResponseEntity<Long>(x, HttpStatus.ACCEPTED);
@@ -112,9 +125,15 @@ public class FlightController {
 	}
 
 	@GetMapping("/show/{page}/{size}")
-	public ResponseEntity<Page<Flight>> show(@PathVariable int page, @PathVariable int size) {
+	public ResponseEntity<Page<Flight>> show(@PathVariable int page, @PathVariable int size,
+			@RequestHeader(value = HEADER_STRING) String token) {
 
 		try {
+
+			ResponseEntity<Boolean> response = UtilsMethods.isUser(token);
+			if (response.getStatusCode() == HttpStatus.FORBIDDEN) {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
 
 			Pageable pageable = PageRequest.of(page, size);
 
@@ -126,10 +145,17 @@ public class FlightController {
 		}
 
 	}
-	
+
 	@GetMapping("/flightFull/{flightId}/{count}")
-	public ResponseEntity<Boolean> isFlightFull(@PathVariable Long flightId, @PathVariable Long count, @RequestHeader(value = HEADER_STRING) String token){
+	public ResponseEntity<Boolean> isFlightFull(@PathVariable Long flightId, @PathVariable Long count,
+			@RequestHeader(value = HEADER_STRING) String token) {
 		try {
+
+			ResponseEntity<Boolean> response = UtilsMethods.isUser(token);
+			if (response.getStatusCode() == HttpStatus.FORBIDDEN) {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
+
 			Flight flight = flightRepo.findById(flightId).get();
 			Long planeId = flight.getPlaneID();
 			Plane plane = planeRepo.findById(planeId).get();
@@ -143,9 +169,14 @@ public class FlightController {
 
 	@PostMapping("/search/{page}/{size}")
 	public ResponseEntity<Page<Flight>> sort(@PathVariable int page, @PathVariable int size,
-			@RequestBody FlightForm flightForm) {
+			@RequestBody FlightForm flightForm, @RequestHeader(value = HEADER_STRING) String token) {
 
 		try {
+			ResponseEntity<Boolean> response = UtilsMethods.isUser(token);
+			if (response.getStatusCode() == HttpStatus.FORBIDDEN) {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
+
 			Pageable pageable = PageRequest.of(page, size);
 
 			ExampleMatcher customExampleMatcher = ExampleMatcher.matchingAny()
@@ -170,6 +201,5 @@ public class FlightController {
 		}
 
 	}
-	
-	
+
 }

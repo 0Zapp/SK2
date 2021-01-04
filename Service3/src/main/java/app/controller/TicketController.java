@@ -40,6 +40,12 @@ public class TicketController {
 	public ResponseEntity<String> addNewTicket(@RequestBody TicketForm ticketForm,
 			@RequestHeader(value = HEADER_STRING) String token) {
 		try {
+			ResponseEntity<Boolean> response = UtilsMethods.isUser(token);
+			if(response.getStatusCode()==HttpStatus.FORBIDDEN) {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
+			
+			
 			int count = ticketRepo.countByFlightId(ticketForm.getFlightId());
 			String url = "http://localhost:8081/flight/flightFull/" + ticketForm.getFlightId() + "/" + count;
 			boolean isFull = UtilsMethods.sendGet(url, token, Boolean.class).getBody();
@@ -70,6 +76,11 @@ public class TicketController {
 	@GetMapping("/getAll")
 	public ResponseEntity<List<Ticket>> getTicketsForUser(@RequestHeader(value = HEADER_STRING) String token) {
 		try {
+			ResponseEntity<Boolean> response = UtilsMethods.isUser(token);
+			if(response.getStatusCode()==HttpStatus.FORBIDDEN) {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
+			
 			User user = UtilsMethods.sendGet("http://localhost:8080/user/get/", token, User.class).getBody();
 			Long userId = user.getId();
 			List<Ticket> tickets = ticketRepo.findByUserIdOrderByDateDesc(userId);

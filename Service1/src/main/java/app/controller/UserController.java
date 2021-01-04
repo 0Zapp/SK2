@@ -141,6 +141,19 @@ public class UserController {
 			return new ResponseEntity<>(-1, HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	
+	@GetMapping("/isUser")
+	public ResponseEntity<Boolean> isUser() {
+		try {
+				return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+
+		} catch (Exception e) {
+
+			return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+		}
+	}
+	
 
 	@GetMapping("/get")
 	public ResponseEntity<User> getUser(@RequestHeader(value = HEADER_STRING) String token) {

@@ -40,6 +40,11 @@ public class PlaneController {
 			@RequestHeader(value = HEADER_STRING) String token) {
 		try {
 
+			ResponseEntity<Boolean> responseUser = UtilsMethods.isUser(token);
+			if (responseUser.getStatusCode() == HttpStatus.FORBIDDEN) {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
+
 			ResponseEntity<Integer> response = UtilsMethods.sendGet("http://localhost:8080/user/isAdmin/", token);
 			if (response.getBody() == 1) {
 
@@ -61,6 +66,12 @@ public class PlaneController {
 	public ResponseEntity<Long> deletePlane(@PathVariable Long x, @RequestHeader(value = HEADER_STRING) String token) {
 
 		try {
+
+			ResponseEntity<Boolean> responseUser = UtilsMethods.isUser(token);
+			if (responseUser.getStatusCode() == HttpStatus.FORBIDDEN) {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
+
 			if (flightRepo.existsByPlaneID(x)) {
 				return new ResponseEntity<Long>(HttpStatus.CONFLICT);
 			}
@@ -80,10 +91,15 @@ public class PlaneController {
 		}
 
 	}
-	
+
 	@GetMapping("/getAll")
 	public ResponseEntity<List<Plane>> getPlanes(@RequestHeader(value = HEADER_STRING) String token) {
 		try {
+			ResponseEntity<Boolean> response = UtilsMethods.isUser(token);
+			if (response.getStatusCode() == HttpStatus.FORBIDDEN) {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
+
 			List<Plane> planes = planeRepo.findAll();
 
 			return new ResponseEntity<>(planes, HttpStatus.OK);
