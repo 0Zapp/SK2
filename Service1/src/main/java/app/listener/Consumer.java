@@ -27,19 +27,16 @@ public class Consumer {
 
 		System.out.println("vrati pare svim korisnicima koji imaju ticket na " + flightID);
 
-		boolean active = false;
+		ResponseEntity<Integer> response = UtilsMethods.sendGet("http://localhost:8080/findUserIDs/" + flightID);
+		ArrayList<Long> userIDs = new ArrayList<>();
+		for (long id : userIDs) {
+			User user = userRepo.findById(id);
 
-		if (active) {
-			ResponseEntity<Integer> response = UtilsMethods.sendGet("http://localhost:8080/findUserIDs/" + flightID);
-			ArrayList<Long> userIDs = new ArrayList<>();
-			for (long id : userIDs) {
-				User user = userRepo.findById(id);
+			String Subject = "Your filght has been canceled";
+			String Text = "Your flight was just cancelled";
 
-				String Subject = "Your filght has been canceled";
-				String Text = "Your flight was just cancelled";
+			// Mail.sendEmail(user.getEmail(), Subject, Text);
 
-				// Mail.sendEmail(user.getEmail(), Subject, Text);
-			}
 		}
 
 	}

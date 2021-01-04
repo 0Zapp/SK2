@@ -23,15 +23,12 @@ public class Consumer {
 	public void consume(Long flightID) {
 
 		System.out.println("cancelluj sve karte sa nasim flightIdjem");
-		boolean active = false;
 
-		if (active) {
-			ArrayList<Ticket> tickets = (ArrayList<Ticket>) ticketRepo.findByFlightId(flightID);
-			for (Ticket ticket : tickets) {
-				ticket.setStatus("canceled");
-				ticketRepo.saveAndFlush(ticket);
+		ArrayList<Ticket> tickets = (ArrayList<Ticket>) ticketRepo.findByFlightId(flightID);
+		for (Ticket ticket : tickets) {
+			ticket.setStatus("canceled");
+			ticketRepo.saveAndFlush(ticket);
 
-			}
 		}
 
 	}
